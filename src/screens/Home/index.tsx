@@ -13,6 +13,7 @@ import {
   TotalPassCount,
   LoginList,
 } from './styles';
+import { Alert } from 'react-native';
 
 interface LoginDataProps {
   id: string;
@@ -30,14 +31,28 @@ export function Home() {
 
   async function loadData() {
     const dataKey = '@savepass:logins';
+    const response = await AsyncStorage.getItem(dataKey)
+    const data = response ? JSON.parse(response) : []
+    setSearchListData(data)
+    setData(data)
     // Get asyncStorage data, use setSearchListData and setData
   }
 
   function handleFilterLoginData() {
-    // Filter results inside data, save with setSearchListData
+    if(typeof searchText === 'string') {
+      const copySearchListData = [...searchListData];
+      const filteredSearchListData = copySearchListData.filter(item => item.service_name === searchText);
+      console.log(filteredSearchListData)
+      setSearchListData(filteredSearchListData);
+      // Filter results inside data, save with setSearchListData
+    }
   }
 
   function handleChangeInputText(text: string) {
+    if (text === '') {
+      Alert.alert('O campo de pesquisa está vazio!')
+    }
+    setSearchText(text)
     // Update searchText value
   }
 
